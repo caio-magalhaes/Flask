@@ -2,6 +2,7 @@
 from bson import ObjectId
 from flask import Blueprint, jsonify, request
 from models.joke_model import JokeModel
+from .status_http import StatusHttp
 
 jokes_controller = Blueprint("jokes", __name__)
 # O primeiro parâmetro determina o nome da blueprint, já o segundo
@@ -48,14 +49,14 @@ def joke_random():
         # O Flask entende que o número após o jsonify, representa o Status HTTP
         return jsonify({"error": "No jokes available"}), 404
 
-    return jsonify(joke.to_dict()), 200
+    return jsonify(joke.to_dict()), StatusHttp.OK
 
 
 @jokes_controller.route("/", methods=["POST"])
 def joke_post():
     new_joke = JokeModel(request.json)
     new_joke.save()
-    return jsonify(new_joke.to_dict()), 201
+    return jsonify(new_joke.to_dict()), StatusHttp.OK
 
 
 @jokes_controller.route("/<id>", methods=["PUT"])
